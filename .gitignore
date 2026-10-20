@@ -1,0 +1,15 @@
+backend/target/
+backend/data/
+frontend/node_modules/
+frontend/dist/
+uploads/
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+credentials.json
+.idea/
+*.iml
+.DS_Store
+.vercel/

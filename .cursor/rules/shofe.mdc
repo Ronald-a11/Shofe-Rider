@@ -1,0 +1,28 @@
+---
+description: Shofe project conventions from the Night Owl & Pesepay product PDF
+alwaysApply: true
+---
+
+# Shofe conventions
+
+This repo is **Spring Boot 3 + React/Vite** (not NestJS/Flutter). Keep that stack unless the user asks to migrate.
+
+## Domain
+- inDrive-style negotiation: passenger proposes fare, drivers ACCEPT or COUNTER, passenger selects, fare locks.
+- Trip transitions only through server services. Log status changes.
+- Night Owl is a dedicated safety module (auto night window, PIN, Guardians, SOS, check-ins, quick-help).
+- Payments go through `PaymentProvider` (Pesepay first for Zimbabwe, Stripe stub for global). **Never call payment SDKs from the frontend with secret keys.**
+
+## Money & time
+- Prefer integer minor units + ISO currency for new money fields; existing `BigDecimal` fare fields stay until a migration phase.
+- Store timestamps in UTC; display in the user's local zone.
+
+## Security
+- JWT + role checks on every authenticated endpoint.
+- Secrets only via environment variables (`PESEPAY_*`, `JWT_SECRET`, DB). Never log secrets, tokens, OTPs, or full phone numbers.
+- Third-party HTTP lives under `com.shofe.integrations.*`.
+
+## Work style
+- One feature/phase at a time; add or update tests for pricing, state machine, wallet ledger, and payments.
+- Do not invent third-party API fields — if unsure, say so and point to official docs.
+- Code and comments in English; user-facing copy can later move to i18n files.

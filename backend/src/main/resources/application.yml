@@ -1,0 +1,59 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: shofe
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/shofe}
+    username: ${SPRING_DATASOURCE_USERNAME:shofe}
+    password: ${SPRING_DATASOURCE_PASSWORD:shofe}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.jdbc.time_zone: UTC
+  servlet:
+    multipart:
+      max-file-size: 8MB
+      max-request-size: 24MB
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+shofe:
+  jwt:
+    secret: ${JWT_SECRET:shofe-dev-secret-change-in-production-32b!}
+    expiration-minutes: ${JWT_EXPIRATION_MINUTES:1440}
+  fare:
+    currency: ZAR
+    base: 20
+    per-km: 9
+    night-owl-multiplier: 1.15
+    minimum: 25
+  matching:
+    radius-km: 12
+    night-owl-min-rating: 4.6
+    request-ttl-minutes: 10
+  night-owl:
+    zone: Africa/Johannesburg
+    start-hour: 22
+    end-hour: 5
+  commission:
+    percent: ${SHOFE_COMMISSION_PERCENT:12}
+    min-wallet: ${SHOFE_MIN_WALLET:5}
+  payments:
+    default-country: ${SHOFE_DEFAULT_COUNTRY:ZW}
+  pesepay:
+    integration-key: ${PESEPAY_INTEGRATION_KEY:}
+    encryption-key: ${PESEPAY_ENCRYPTION_KEY:}
+    result-url: ${PESEPAY_RESULT_URL:http://localhost:8080/api/payments/pesepay/result}
+    return-url: ${PESEPAY_RETURN_URL:http://localhost:5173/activity}
+    demo: ${PESEPAY_DEMO:true}
+  dev-tools: ${SHOFE_DEV_TOOLS:true}
+  uploads-dir: ${SHOFE_UPLOADS:uploads}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
