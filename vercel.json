@@ -1,0 +1,19 @@
+{
+  "services": {
+    "frontend": {
+      "root": "frontend/",
+      "entrypoint": "Dockerfile.vercel"
+    },
+    "backend": {
+      "root": "backend/",
+      "entrypoint": "Dockerfile.vercel"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": { "service": "backend" } },
+    { "source": "/uploads/(.*)", "destination": { "service": "backend" } },
+    { "source": "/ws", "destination": { "service": "backend" } },
+    { "source": "/ws/(.*)", "destination": { "service": "backend" } },
+    { "source": "/(.*)", "destination": { "service": "frontend" } }
+  ]
+}

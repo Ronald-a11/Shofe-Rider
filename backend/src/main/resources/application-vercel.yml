@@ -1,0 +1,20 @@
+# In-memory H2 so the API can boot on Vercel without a managed Postgres.
+spring:
+  datasource:
+    url: jdbc:h2:mem:shofe;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.dialect: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: false
+
+shofe:
+  otp:
+    echo: true
+  uploads-dir: /tmp/shofe-uploads

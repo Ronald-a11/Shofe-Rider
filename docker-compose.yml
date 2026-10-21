@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgis/postgis:16-3.5
+    environment:
+      POSTGRES_DB: shofe
+      POSTGRES_USER: shofe
+      POSTGRES_PASSWORD: shofe
+    ports:
+      - "5432:5432"
+    volumes:
+      - shofe_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shofe -d shofe"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build: ./backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/shofe
+      SPRING_DATASOURCE_USERNAME: shofe
+      SPRING_DATASOURCE_PASSWORD: shofe
+      SHOFE_DEV_TOOLS: "true"
+    ports:
+      - "8080:8080"
+
+volumes:
+  shofe_pg:
