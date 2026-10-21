@@ -15,7 +15,7 @@ import { AdminPage } from './pages/AdminPage'
 import { TrackPage } from './pages/TrackPage'
 import { OnboardingPage } from './pages/OnboardingPage'
 import { NightOwlPage } from './pages/NightOwlPage'
-import { PesepayDemoPage } from './pages/PesepayDemoPage'
+import { StaffPage } from './pages/StaffPage'
 
 function Home() {
   const { user } = useAuth()
@@ -37,7 +37,7 @@ export default function App() {
     <Routes>
       <Route path="/track/:token" element={<TrackPage />} />
       <Route path="/login" element={ready && user ? <Navigate to="/" replace /> : <AuthPage />} />
-      <Route path="/payments/pesepay-demo" element={<Guard><PesepayDemoPage /></Guard>} />
+      <Route path="/staff" element={ready && user ? <Navigate to="/" replace /> : <StaffPage />} />
       <Route element={<Guard><Shell /></Guard>}>
         <Route path="/" element={<Home />} />
         <Route path="/activity" element={<ActivityPage />} />

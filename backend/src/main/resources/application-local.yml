@@ -12,8 +12,7 @@ spring:
       hibernate.dialect: org.hibernate.dialect.H2Dialect
   h2:
     console:
-      enabled: true
-      path: /h2-console
+      enabled: false
 
 shofe:
   fare:
@@ -22,6 +21,3 @@ shofe:
     zone: Africa/Harare
   payments:
     default-country: ZW
-  otp:
-    echo: true
-  dev-tools: false

@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Background poll for pending Pesepay (and stub) payments when webhooks are delayed.
+ * Background poll for pending Pesepay payments when the result callback is delayed.
  */
 @Slf4j
 @Component

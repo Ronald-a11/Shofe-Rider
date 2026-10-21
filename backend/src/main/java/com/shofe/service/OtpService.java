@@ -48,9 +48,6 @@ public class OtpService {
     @Value("${shofe.otp.max-attempts:5}")
     private int maxAttempts;
 
-    @Value("${shofe.otp.echo:false}")
-    private boolean echo;
-
     @Transactional
     public AuthDtos.OtpSentResponse request(AuthDtos.OtpRequest request) {
         PhoneNumbers.Country country = PhoneNumbers.requireCountry(request.countryIso());
@@ -85,8 +82,7 @@ public class OtpService {
                 true,
                 (int) ttlSeconds,
                 (int) resendSeconds,
-                newUser,
-                echo ? code : null);
+                newUser);
     }
 
     @Transactional

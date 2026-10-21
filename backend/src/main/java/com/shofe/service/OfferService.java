@@ -12,7 +12,6 @@ import com.shofe.dto.RideDtos;
 import com.shofe.exception.ApiException;
 import com.shofe.repo.RideOfferRepository;
 import com.shofe.repo.RideRequestRepository;
-import com.shofe.repo.UserRepository;
 import com.shofe.ws.RideSockets;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,6 @@ public class OfferService {
     private final CurrentUserService currentUserService;
     private final RideRequestRepository requests;
     private final RideOfferRepository offers;
-    private final UserRepository users;
     private final RideMapper rideMapper;
     private final RideSockets sockets;
     private final NotificationService notifications;
@@ -44,23 +42,6 @@ public class OfferService {
         }
         OfferType type = OfferType.valueOf(body.type());
         return create(driver, loadOpen(requestId), body.amount(), type, body.etaMinutes(), body.message());
-    }
-
-    @Transactional
-    public void systemOffer(UUID driverId, UUID requestId, boolean accept, int eta) {
-        RideRequest request = requests.findById(requestId).orElse(null);
-        if (request == null || !EnumSet.of(RequestStatus.REQUESTED, RequestStatus.OFFERS_RECEIVED).contains(request.getStatus())) {
-            return;
-        }
-        User driver = users.findById(driverId).orElse(null);
-        if (driver == null) {
-            return;
-        }
-        BigDecimal amount = accept
-                ? request.getProposedFare()
-                : request.getProposedFare().add(new BigDecimal("15")).setScale(0, RoundingMode.HALF_UP);
-        String message = accept ? "I can do your fare" : "Small bump for this route";
-        create(driver, request, amount, accept ? OfferType.ACCEPT : OfferType.COUNTER, eta, message);
     }
 
     @Transactional(readOnly = true)

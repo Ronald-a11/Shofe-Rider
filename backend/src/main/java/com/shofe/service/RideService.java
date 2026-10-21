@@ -182,12 +182,7 @@ public class RideService {
         if (payment.getMethod() == PaymentMethod.CASH) {
             throw ApiException.badRequest("Cash is settled with the driver");
         }
-        // Legacy confirm for Stripe stub without redirect; Pesepay uses /api/payments/rides/{id}/start
-        payment.setStatus(PaymentStatus.PAID);
-        if (payment.getProviderRef() == null) {
-            payment.setProviderRef("pi_stub_" + UUID.randomUUID().toString().substring(0, 8));
-        }
-        return rideMapper.toRide(ride, user);
+        throw ApiException.badRequest("Pay this trip with Pesepay checkout");
     }
 
     @Transactional(readOnly = true)

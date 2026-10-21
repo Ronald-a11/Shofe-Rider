@@ -12,6 +12,7 @@ import com.shofe.integrations.payments.PaymentProviderRegistry;
 import com.shofe.integrations.payments.PesepayProvider;
 import com.shofe.repo.PaymentRepository;
 import com.shofe.repo.RideRepository;
+import com.shofe.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,9 @@ public class PaymentOrchestrationService {
     private final PaymentProviderRegistry registry;
     private final WalletService walletService;
 
-    /** Pending wallet top-ups awaiting Pesepay confirmation (demo + live poll). */
+    private final UserRepository users;
+
+    /** Pending wallet top-ups awaiting Pesepay confirmation. */
     private final Map<String, PendingTopUp> pendingTopUps = new ConcurrentHashMap<>();
 
     @Value("${shofe.payments.default-country:ZW}")
@@ -75,7 +78,7 @@ public class PaymentOrchestrationService {
         payment.setPollUrl(started.pollUrl());
         payment.setRedirectUrl(started.redirectUrl());
         return new PayStart(payment.getId(), started.providerRef(), started.redirectUrl(), started.pollUrl(),
-                started.status(), started.demo());
+                started.status(), false);
     }
 
     @Transactional
@@ -98,31 +101,27 @@ public class PaymentOrchestrationService {
                 "wallet-topup-" + driver.getId() + "-" + System.currentTimeMillis()));
         pendingTopUps.put(started.providerRef(), new PendingTopUp(driver.getId(), amount, wallet.getCurrency()));
         return new WalletTopUpStart(started.providerRef(), started.redirectUrl(), started.pollUrl(), amount,
-                wallet.getCurrency(), started.demo());
+                wallet.getCurrency(), false);
     }
 
     @Transactional
     public PaymentProvider.StatusResult poll(String providerRef) {
+        return applyStatus(providerRef);
+    }
+
+    @Transactional
+    public PaymentProvider.StatusResult applyStatus(String providerRef) {
         PaymentProvider.StatusResult status = resolveProvider(providerRef).checkStatus(providerRef);
         if (status.finalState() && status.success()) {
             payments.findByProviderRef(providerRef).ifPresent(payment -> payment.setStatus(PaymentStatus.PAID));
             PendingTopUp pending = pendingTopUps.remove(providerRef);
             if (pending != null) {
-                User driver = currentUserService.require();
-                if (!driver.getId().equals(pending.userId())) {
-                    throw ApiException.forbidden("This top-up belongs to another account");
-                }
-                walletService.creditTopUp(driver, pending.amount(), pending.currency(),
-                        "topup-" + providerRef, null, "Pesepay wallet top-up");
+                users.findById(pending.userId()).ifPresent(driver ->
+                        walletService.creditTopUp(driver, pending.amount(), pending.currency(),
+                                "topup-" + providerRef, null, "Pesepay wallet top-up"));
             }
         }
         return status;
-    }
-
-    @Transactional
-    public PaymentProvider.StatusResult confirmDemo(String providerRef) {
-        registry.pesepay().markDemoPaid(providerRef);
-        return poll(providerRef);
     }
 
     public List<PesepayProvider.MethodOption> pesepayMethods(String currency) {

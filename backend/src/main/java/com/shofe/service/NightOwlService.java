@@ -123,23 +123,13 @@ public class NightOwlService {
     }
 
     public List<MiscDtos.HelpPlace> quickHelp(double lat, double lng) {
-        // Demo catalogue relative to the request point (swap for Google Places / Overpass later).
-        record Seed(String type, String name, double dLat, double dLng, boolean open24h) {}
-        List<Seed> seeds = List.of(
-                new Seed("FUEL", "Night Fuel Stop", 0.008, 0.004, true),
-                new Seed("HOSPITAL", "24h Clinic", -0.006, 0.009, true),
-                new Seed("POLICE", "Police Station", 0.011, -0.005, true),
-                new Seed("MECHANIC", "Roadside Mechanic", -0.01, -0.008, false),
-                new Seed("SAFE_SPOT", "Well-lit Mall Parking", 0.004, -0.012, true));
         List<MiscDtos.HelpPlace> places = new ArrayList<>();
-        for (Seed seed : seeds) {
-            double pLat = lat + seed.dLat;
-            double pLng = lng + seed.dLng;
-            double km = GeoMath.haversineKm(lat, lng, pLat, pLng);
-            places.add(new MiscDtos.HelpPlace(seed.type, seed.name, pLat, pLng, km, seed.open24h));
+        for (MiscDtos.Place place : Places.HARARE) {
+            double km = GeoMath.haversineKm(lat, lng, place.lat(), place.lng());
+            places.add(new MiscDtos.HelpPlace("SAFE_SPOT", place.label(), place.lat(), place.lng(), km, true));
         }
         places.sort(Comparator.comparingDouble(MiscDtos.HelpPlace::distanceKm));
-        return places;
+        return places.stream().limit(6).toList();
     }
 
     public MiscDtos.EmergencyInfo emergencyForCountry(String countryCode) {

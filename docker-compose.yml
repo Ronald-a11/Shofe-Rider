@@ -24,7 +24,6 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/shofe
       SPRING_DATASOURCE_USERNAME: shofe
       SPRING_DATASOURCE_PASSWORD: shofe
-      SHOFE_DEV_TOOLS: "true"
     ports:
       - "8080:8080"
 

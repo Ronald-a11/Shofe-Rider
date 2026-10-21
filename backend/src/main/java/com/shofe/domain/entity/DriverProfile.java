@@ -58,7 +58,6 @@ public class DriverProfile {
     @Column(nullable = false)
     private boolean roadsideOptIn;
 
-    /** Demo-only drivers that auto-bid when dev tools are enabled. */
     @Column(nullable = false)
     private boolean demoBot;
 

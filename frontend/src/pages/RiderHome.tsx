@@ -26,7 +26,7 @@ export function RiderHome() {
   const [nightOwl, setNightOwl] = useState(() => localStorage.getItem('shofe_night_owl') === '1')
   const [fare, setFare] = useState(5)
   const [touched, setTouched] = useState(false)
-  const [pay, setPay] = useState<'CASH' | 'PESEPAY' | 'CARD'>('CASH')
+  const [pay, setPay] = useState<'CASH' | 'PESEPAY'>('CASH')
   const [busy, setBusy] = useState(false)
   const [focus, setFocus] = useState<Point | undefined>()
 
@@ -280,7 +280,6 @@ export function RiderHome() {
                     items={[
                       { id: 'CASH', label: 'Cash' },
                       { id: 'PESEPAY', label: 'Pesepay' },
-                      { id: 'CARD', label: 'Card' },
                     ]}
                   />
 

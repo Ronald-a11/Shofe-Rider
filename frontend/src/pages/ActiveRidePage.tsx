@@ -88,17 +88,11 @@ export function ActiveRidePage() {
     }
   }
 
-  async function startPayment(provider: 'PESEPAY' | 'STRIPE') {
+  async function startPayment() {
     if (!id) return
     setBusy(true)
     try {
-      if (provider === 'STRIPE') {
-        await api(`/api/rides/${id}/pay`, { method: 'POST' })
-        toast('Card payment recorded')
-        await queryClient.invalidateQueries({ queryKey: ['ride', id] })
-        return
-      }
-      const started = await api<{ redirectUrl: string; demo: boolean }>(`/api/payments/rides/${id}/start`, {
+      const started = await api<{ redirectUrl: string }>(`/api/payments/rides/${id}/start`, {
         method: 'POST',
         body: JSON.stringify({ provider: 'PESEPAY' }),
       })
@@ -174,13 +168,13 @@ export function ActiveRidePage() {
           {data.status !== 'COMPLETED' && data.status !== 'CANCELLED' && data.status !== 'IN_PROGRESS' && (
             <Button variant="ghost" onClick={() => void act(`/api/rides/${id}/status`, { status: 'CANCELLED', reason: 'Cancelled in app' })}>Cancel trip</Button>
           )}
-          {!isDriver && (data.paymentMethod === 'PESEPAY' || data.paymentMethod === 'CARD') && data.paymentStatus !== 'PAID' && (
+          {!isDriver && data.paymentMethod === 'PESEPAY' && data.paymentStatus !== 'PAID' && (
             <Button
               variant="dark"
               loading={busy}
-              onClick={() => void startPayment(data.paymentMethod === 'PESEPAY' ? 'PESEPAY' : 'STRIPE')}
+              onClick={() => void startPayment()}
             >
-              {data.paymentMethod === 'PESEPAY' ? 'Pay with Pesepay' : 'Pay with card (Stripe)'}
+              Pay with Pesepay
             </Button>
           )}
         </div>

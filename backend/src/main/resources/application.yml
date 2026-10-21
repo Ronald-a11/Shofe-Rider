@@ -50,7 +50,7 @@ shofe:
     encryption-key: ${PESEPAY_ENCRYPTION_KEY:}
     result-url: ${PESEPAY_RESULT_URL:http://localhost:8080/api/payments/pesepay/result}
     return-url: ${PESEPAY_RETURN_URL:http://localhost:5173/activity}
-    demo: ${PESEPAY_DEMO:true}
+    sandbox: ${PESEPAY_SANDBOX:true}
   safety:
     fatigue-hours: ${SHOFE_FATIGUE_HOURS:10}
     route-deviation-km: ${SHOFE_ROUTE_DEVIATION_KM:1.5}
@@ -63,7 +63,6 @@ shofe:
     resend-seconds: ${SHOFE_OTP_RESEND:45}
     max-sends: ${SHOFE_OTP_MAX_SENDS:5}
     max-attempts: ${SHOFE_OTP_MAX_ATTEMPTS:5}
-    echo: ${SHOFE_OTP_ECHO:false}
   sms:
     twilio:
       account-sid: ${TWILIO_ACCOUNT_SID:}
@@ -73,7 +72,6 @@ shofe:
       username: ${AT_USERNAME:}
       api-key: ${AT_API_KEY:}
       from: ${AT_FROM:}
-  dev-tools: ${SHOFE_DEV_TOOLS:false}
   uploads-dir: ${SHOFE_UPLOADS:uploads}
 
 springdoc:

@@ -36,7 +36,7 @@ public final class AuthDtos {
             @Size(max = 120) String fullName
     ) {}
 
-    public record OtpSentResponse(boolean sent, int expiresInSeconds, int retryAfterSeconds, boolean newUser, String debugCode) {}
+    public record OtpSentResponse(boolean sent, int expiresInSeconds, int retryAfterSeconds, boolean newUser) {}
 
     public record ModeRequest(@NotBlank String mode) {}
 

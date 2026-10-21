@@ -13,7 +13,6 @@ type OtpSent = {
   expiresInSeconds: number
   retryAfterSeconds: number
   newUser: boolean
-  debugCode?: string | null
 }
 
 export function AuthPage() {
@@ -25,8 +24,6 @@ export function AuthPage() {
   const [fullName, setFullName] = useState('')
   const [sent, setSent] = useState<OtpSent | null>(null)
   const [loading, setLoading] = useState(false)
-  const [staffOpen, setStaffOpen] = useState(false)
-  const [staff, setStaff] = useState({ email: '', password: '' })
   const { login } = useAuth()
   const toast = useToast()
   const navigate = useNavigate()
@@ -75,21 +72,6 @@ export function AuthPage() {
         }),
       })
       go(response)
-    } catch (error) {
-      toast(formatAuthError(error), 'err')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  async function staffLogin(event: React.FormEvent) {
-    event.preventDefault()
-    setLoading(true)
-    try {
-      go(await api<AuthResponse>('/api/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ email: staff.email.trim(), password: staff.password }),
-      }))
     } catch (error) {
       toast(formatAuthError(error), 'err')
     } finally {
@@ -159,11 +141,6 @@ export function AuthPage() {
                 <p className="text-sm leading-relaxed text-muted">
                   Enter the 6-digit code sent to {country?.dial} {nationalNumber}.
                 </p>
-                {sent?.debugCode && (
-                  <p className="rounded-2xl bg-brand-mist px-3.5 py-2.5 text-xs font-bold text-brand-dark">
-                    Local test code: {sent.debugCode}
-                  </p>
-                )}
                 <Field
                   label="SMS code"
                   value={code}
@@ -195,20 +172,6 @@ export function AuthPage() {
               </form>
             )}
 
-          <button
-            type="button"
-            className="mt-4 text-xs font-bold text-muted"
-            onClick={() => setStaffOpen((open) => !open)}
-          >
-            Staff email login
-          </button>
-          {staffOpen && (
-            <form onSubmit={staffLogin} className="mt-3 grid gap-3">
-              <Field label="Email" type="email" value={staff.email} onChange={(e) => setStaff((s) => ({ ...s, email: e.target.value }))} required />
-              <Field label="Password" type="password" value={staff.password} onChange={(e) => setStaff((s) => ({ ...s, password: e.target.value }))} required />
-              <Button loading={loading} type="submit" variant="dark">Staff continue</Button>
-            </form>
-          )}
         </motion.div>
       </div>
     </div>
@@ -217,7 +180,7 @@ export function AuthPage() {
 
 function formatAuthError(error: unknown) {
   if (error instanceof TypeError) {
-    return 'Cannot reach the Shofe API. Start the backend, then try again.'
+    return 'Cannot reach Shofe. Check your connection and try again.'
   }
   if (error instanceof ApiError) return error.message
   if (error instanceof Error) return error.message

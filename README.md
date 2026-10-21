@@ -71,6 +71,8 @@ mvn spring-boot:run -Dspring-boot.run.profiles=local
 | `SPRING_DATASOURCE_USERNAME` / `PASSWORD` | `shofe` / `shofe` |
 | `JWT_SECRET` | dev secret in `application.yml` — replace this |
 | `SHOFE_DEFAULT_COUNTRY` | `ZW` |
-| `SHOFE_DEV_TOOLS` | `false` |
+| `PESEPAY_INTEGRATION_KEY` / `PESEPAY_ENCRYPTION_KEY` | empty — required for checkout |
+| `PESEPAY_SANDBOX` | `true` (set `false` for live merchant keys) |
+| `TWILIO_*` or `AT_*` | empty — required to send login SMS |
 
 Fares are in **USD**: base $2 + $0.80 per km, 15% Night Owl uplift, minimum $2.50. Maps and geocoding default to Zimbabwe (`countrycodes=zw`, timezone `Africa/Harare`).

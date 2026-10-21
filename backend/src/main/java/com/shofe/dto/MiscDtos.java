@@ -16,8 +16,6 @@ public final class MiscDtos {
 
     public record OnlineRequest(@NotNull Double lat, @NotNull Double lng, boolean roadsideOptIn) {}
 
-    public record TeleportRequest(@NotNull Double lat, @NotNull Double lng) {}
-
     public record DriverProfileRequest(
             @NotBlank String licenseNumber,
             @NotBlank String vehicleMake,
