@@ -17,4 +17,5 @@ spring:
 shofe:
   otp:
     echo: true
+  dev-tools: false
   uploads-dir: /tmp/shofe-uploads
